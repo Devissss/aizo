@@ -1,0 +1,72 @@
+--[[
+	V's SFW boobwoken stuff.
+]]--
+
+
+local function requireShit(object) -- thanks neb~
+	local object=object:Clone()
+	local source = object.Source
+	local shit = loadstring(source,object.Name)
+	local origEnv = getfenv(shit);
+	getfenv(shit).script = object;
+	getfenv(shit).require=function(what)
+		return requireShit(what);
+	end
+	local dat = {pcall(function()   
+		return shit();   
+	end)}   
+	if(dat[1]==false)then
+		warn(dat[2])
+		return nil
+	else
+		table.remove(dat,1)
+		return unpack(dat)
+	end
+end
+
+local BoobFunctionTwoElectricBoogaloo = requireShit(game:GetObjects(getsynasset("BoobModule2.rbxm"))[1])
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local NPCFolder = workspace:WaitForChild("NPCs")
+local LiveFolder = workspace:WaitForChild("Live")
+
+for i,v in pairs(NPCFolder:GetChildren()) do 
+	spawn(function()
+		if v:IsA("Model") then
+			local Name = ((v:FindFirstChildOfClass("Humanoid") and v:FindFirstChildOfClass("Humanoid"):GetAttribute("CharacterName")) or v.Name) 
+			BoobFunctionTwoElectricBoogaloo(v,Name,false)
+		end
+	end)
+end
+
+
+for i,v in pairs(LiveFolder:GetChildren()) do 
+	spawn(function()
+		if v:IsA("Model") then
+			v:WaitForChild("Torso")
+			local Name = ((v:FindFirstChildOfClass("Humanoid") and v:FindFirstChildOfClass("Humanoid"):GetAttribute("CharacterName")) or v.Name) 
+			BoobFunctionTwoElectricBoogaloo(v,Name,true)
+			v.ChildAdded:Connect(function(x)
+				if x.Name == "Torso" then
+					local Name = ((v:FindFirstChildOfClass("Humanoid") and v:FindFirstChildOfClass("Humanoid"):GetAttribute("CharacterName")) or v.Name) 
+					BoobFunctionTwoElectricBoogaloo(v,Name,true)					
+				end
+			end)
+		end
+	end)
+end
+
+LiveFolder.ChildAdded:Connect(function(v)
+	spawn(function()
+		if v:IsA("Model") then
+			v:WaitForChild("Torso")
+			local Name = ((v:FindFirstChildOfClass("Humanoid") and v:FindFirstChildOfClass("Humanoid"):GetAttribute("CharacterName")) or v.Name) 
+			BoobFunctionTwoElectricBoogaloo(v,Name,true)
+			v.ChildAdded:Connect(function(x)
+				if x.Name == "Torso" then
+					local Name = ((v:FindFirstChildOfClass("Humanoid") and v:FindFirstChildOfClass("Humanoid"):GetAttribute("CharacterName")) or v.Name) 
+					BoobFunctionTwoElectricBoogaloo(v,Name,true)					
+				end
+			end)
+		end
+	end)
+end)
